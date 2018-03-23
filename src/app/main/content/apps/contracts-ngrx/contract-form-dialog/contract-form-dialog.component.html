@@ -1,0 +1,109 @@
+<div class="dialog-content-wrapper">
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+
+    <mat-toolbar-row class="toolbar-bottom py-8 py-sm-16" fxLayout="column" fxLayoutAlign="center center">
+      <div class="contract-name">{{contract.name}}</div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <div mat-dialog-content class="p-24 m-0" fusePerfectScrollbar>
+
+    <form [formGroup]="contractForm">
+
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">edit</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="name" formControlName="name" placeholder="Name" matInput>
+          <mat-error *ngIf="contractForm.controls['name'].hasError('minlength')">
+            name should be at least 4 characters long
+          </mat-error>
+          <mat-error *ngIf="contractForm.controls['name'].hasError('required')">
+            name is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">business</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="customer" formControlName="customer" placeholder="Customer" matInput required>
+        </mat-form-field>
+      </div>
+
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">attach_money</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="currencyDefault" formControlName="currencyDefault" placeholder="CurrencyDefault" matInput>
+        </mat-form-field>
+      </div>
+
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">info</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="remark" formControlName="remark" matInput placeholder="Remark">
+        </mat-form-field>
+      </div>
+
+      <div formGroupName="date">
+
+        <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+          <mat-form-field class="mr-24" fxFlex>
+            <input matInput [matDatepicker]="validFromPicker" placeholder="ValidFrom" formControlName="validFrom">
+            <mat-datepicker-toggle matSuffix [for]="validFromPicker"></mat-datepicker-toggle>
+            <mat-datepicker #validFromPicker></mat-datepicker>
+            <mat-error *ngIf="contractForm.get('date').get('validFrom').hasError('dateNotInFuture')">
+              Valid date should be in the future
+            </mat-error>
+            <mat-error *ngIf="contractForm.get('date').get('validFrom').hasError('required')">
+              This field is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+          <mat-form-field class="mr-24" fxFlex>
+            <input matInput [matDatepicker]="dateExpiredPicker" placeholder="DateExpired" formControlName="dateExpired">
+            <mat-datepicker-toggle matSuffix [for]="dateExpiredPicker"></mat-datepicker-toggle>
+            <mat-datepicker #dateExpiredPicker></mat-datepicker>
+            <mat-error *ngIf="contractForm.get('date').hasError('valueIsSmaller')">
+              The expiration date should be after the validity date
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+      </div>
+
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">build</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="status" formControlName="status" matInput placeholder="Status">
+        </mat-form-field>
+      </div>
+
+    </form>
+
+  </div>
+
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between center">
+
+    <button *ngIf="action !=='edit'" mat-raised-button (click)="dialogRef.close(contractForm)" class="save-button mat-accent"
+      [disabled]="contractForm.invalid" aria-label="SAVE">
+      SAVE
+    </button>
+
+    <button *ngIf="action ==='edit'" mat-raised-button (click)="saveForm([contractForm])" class="save-button mat-accent" aria-label="SAVE">
+      SAVE
+    </button>
+
+    <button *ngIf="action ==='edit'" mat-button class="mat-icon-button" (click)="deleteContract()" aria-label="Delete" matTooltip="Delete">
+      <mat-icon>delete</mat-icon>
+    </button>
+
+  </div>
+</div>
